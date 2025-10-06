@@ -1,0 +1,13 @@
+# системные файлы
+*.swp
+*.log
+
+# файлы IDE
+.vscode/
+.idea/
+
+# Docker артефакты
+*.tar
+*.img
+*.bak
+
