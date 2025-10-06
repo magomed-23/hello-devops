@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t hello-devops:ci .
+
+      - name: Run container and test output
+        run: |
+          set -euo pipefail
+          out=$(docker run --rm hello-devops:ci)
+          echo "Container output: $out"
+          test "$out" = "Hello from inside Docker!"
+
+      - name: Show image size
+        run: docker image ls hello-devops:ci
+
