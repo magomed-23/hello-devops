@@ -8,21 +8,24 @@ on:
 jobs:
   docker-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t hello-devops:ci .
+      - name: Build Docker image (alpine)
+        run: docker build -t hello-devops:alpine .
 
-      - name: Run container and test output
+      - name: Test output equals expected
         run: |
           set -euo pipefail
-          out=$(docker run --rm hello-devops:ci)
+          out=$(docker run --rm hello-devops:alpine)
           echo "Container output: $out"
           test "$out" = "Hello from inside Docker!"
 
-      - name: Show image size
-        run: docker image ls hello-devops:ci
+      - name: Ensure container runs as non-root
+        run: |
+          set -euo pipefail
+          uid=$(docker run --rm --entrypoint sh hello-devops:alpine -c 'id -u')
+          echo "UID inside container: $uid"
+          test "$uid" -ne 0
 
